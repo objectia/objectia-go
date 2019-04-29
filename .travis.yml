@@ -1,0 +1,18 @@
+language: go
+
+go:
+  - "1.8"
+  - "1.9"
+  - "1.10"
+
+install:
+  - export PATH=$PATH:$HOME/gopath/bin
+  - go get github.com/stretchr/testify/assert
+  - go get github.com/davecgh/go-spew/spew
+
+script:
+  - go build
+#  - go test -race -coverprofile=coverage.txt -covermode=atomic
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
