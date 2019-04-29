@@ -8,7 +8,7 @@ go:
   - "1.12"
 
 env:
-  OBJECTIA_APIKEY=mock
+  - OBJECTIA_APIKEY=mock
 
 install:
   - export PATH=$PATH:$HOME/gopath/bin
