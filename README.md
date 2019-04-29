@@ -19,7 +19,7 @@ $ go get -u github.com/objectia/objectia-go
 
 ### Requirements
 
-* Go 1.8 or later
+* Go 1.8 or later 
 
 
 ### Development:
