@@ -88,6 +88,5 @@ type IPSecurity struct {
 
 // APIUsage model
 type APIUsage struct {
-	Total       int
-	GeoLocation int
+	GeoLocation int `json:"geoip,omitempty" xml:"geoip,omitempty"`
 }

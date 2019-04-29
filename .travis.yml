@@ -7,6 +7,9 @@ go:
   - "1.11"
   - "1.12"
 
+env:
+  OBJECTIA_APIKEY=mock
+
 install:
   - export PATH=$PATH:$HOME/gopath/bin
   - go get github.com/stretchr/testify/assert
