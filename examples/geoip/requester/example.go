@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"gitlab.com/objectia/objectia-go"
+	"github.com/objectia/objectia-go"
 )
 
 func main() {
