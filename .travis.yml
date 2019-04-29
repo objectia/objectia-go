@@ -4,11 +4,12 @@ go:
   - "1.8"
   - "1.9"
   - "1.10"
+  - "1.11"
+  - "1.12"
 
 install:
   - export PATH=$PATH:$HOME/gopath/bin
   - go get github.com/stretchr/testify/assert
-  - go get github.com/davecgh/go-spew/spew
 
 script:
   - go build
