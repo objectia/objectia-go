@@ -38,7 +38,6 @@ func Test_Usage_Get(t *testing.T) {
 	assert.Equal(t, 12345, result.GeoLocation)
 }
 
-/*
 func Test_GeoLocation_Get(t *testing.T) {
 	client, err := objectia.NewClient(apiKey, nil)
 	assert.NoError(t, err)
@@ -62,4 +61,14 @@ func Test_GeoLocation_GetBulk(t *testing.T) {
 		assert.NotNil(t, v)
 		assert.Equal(t, "US", v.CountryCode)
 	}
-}*/
+}
+
+func Test_GeoLocation_GetCurrent(t *testing.T) {
+	client, err := objectia.NewClient(apiKey, nil)
+	assert.NoError(t, err)
+	assert.NotNil(t, client)
+
+	result, err := client.GeoLocation.GetCurrent()
+	assert.NoError(t, err)
+	assert.NotNil(t, result)
+}
