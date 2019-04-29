@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	version        = "0.9.2"
+	version        = "1.0.0"
 	userAgent      = "objectia-go/" + version
 	apiBaseURL     = "https://api.objectia.com/rest"
 	defaultTimeout = time.Second * 30
@@ -96,15 +96,15 @@ func (c *GeoLocation) Get(ip string) (*IPLocation, error) {
 	return result, nil
 }
 
-// GetCurrent retrieves the geolocation for requester.
-func (c *GeoLocation) GetCurrent() (*IPLocation, error) {
+// Get returns the API usage for current month.
+func (c *Usage) Get() (*APIUsage, error) {
 	var resp Response
-	_, err := c.client.get("/v1/geoip/me", nil, &resp)
+	_, err := c.client.get("/v1/usage", nil, &resp)
 	if err != nil {
 		return nil, err
 	}
 
-	result := &IPLocation{}
+	result := &APIUsage{}
 	err = fromMap(resp.Data, result)
 	if err != nil {
 		return nil, err
@@ -136,15 +136,15 @@ func (c *GeoLocation) GetBulk(iplist []string) ([]IPLocation, error) {
 	return result, nil
 }
 
-// Get returns the API usage for current month.
-func (c *Usage) Get() (*APIUsage, error) {
+// GetCurrent retrieves the geolocation for the requester.
+func (c *GeoLocation) GetCurrent() (*IPLocation, error) {
 	var resp Response
-	_, err := c.client.get("/v1/usage", nil, &resp)
+	_, err := c.client.get("/v1/geoip/myip", nil, &resp)
 	if err != nil {
 		return nil, err
 	}
 
-	result := &APIUsage{}
+	result := &IPLocation{}
 	err = fromMap(resp.Data, result)
 	if err != nil {
 		return nil, err

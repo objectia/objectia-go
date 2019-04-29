@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/objectia/objectia-go.svg?branch=master)](https://travis-ci.org/objectia/objectia-go) 
 [![codecov](https://codecov.io/gh/objectia/objectia-go/branch/master/graph/badge.svg)](https://codecov.io/gh/objectia/objectia-go)
 
-Go client for [Objectia API](https://www.objectia.com)
+Go client for [Objectia API](https://objectia.com)
  
 ## Documentation
 
@@ -13,7 +13,9 @@ See the [Go API docs](https://docs.objectia.com/clients/go.html).
 You don't need this source code unless you want to modify the package. If you just
 want to use the package, just run:
 
-    go get -u github.com/objectia/objectia-go
+```bash
+$ go get -u github.com/objectia/objectia-go
+```    
 
 ### Requirements
 
@@ -22,14 +24,15 @@ want to use the package, just run:
 
 ### Development:
 
-* go get -u github.com/stretchr/testify/assert
-
+```bash
+$ go get -u github.com/stretchr/testify/assert
+```
 
 ## Usage
 
 The library needs to be configured with your account's API key. Get your own API key by signing up for a free [Objectia account](https://objectia.com).
 
-``` go
+```go
 package main
 
 import (
@@ -60,8 +63,13 @@ Look in the [examples folder](./examples) for more code examples.
 #### type Client
 
 ``` go
+type GeoLocation struct {
+  // contains filtered or unexported fields
+}
+
 type Client struct {
   // contains filtered or unexported fields
+  GeoLocation *GeoLocation
 }
 ```
 
@@ -76,29 +84,30 @@ func NewClient(apiKey string, httpClient *http.Client) (*Client, error)
 
 NewClient initializes a new API client. You may use your own http client, or pass nil to use the default configuration.
 
+## GeoLocation API
 
-#### func (*Client) Get
+#### func (*GeoLocation) Get
 
 ``` go
-func (c *Client) Get(ip string) (*IPLocation, error)
+func (c *GeoLocation) Get(ip string) (*IPLocation, error)
 ```
 
 Returns geoip location data for the specified IP address (or domain name).
 
 
-#### func (*Client) GetCurrent
+#### func (*GeoLocation) GetCurrent
 
 ``` go
-func (c *Client) GetCurrent() (*IPLocation, error)
+func (c *GeoLocation) GetCurrent() (*IPLocation, error)
 ```
 
 Returns geoip location data for the requester's IP address.
 
 
-#### func (*Client) GetBulk
+#### func (*GeoLocation) GetBulk
 
 ``` go
-func (c *Client) GetBulk(iplist []string) ([]IPLocation, error)
+func (c *GeoLocation) GetBulk(iplist []string) ([]IPLocation, error)
 ```
 
 Returns an array of geo location data for the specified IP addresses (or domain names).
