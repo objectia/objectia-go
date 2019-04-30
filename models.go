@@ -8,6 +8,13 @@ type ETag struct {
 	LastModified time.Time
 }
 
+// GeoLocationOptions model
+type GeoLocationOptions struct {
+	DisplayFields    string
+	LookupHostname   bool
+	ShowSecurityInfo bool
+}
+
 // IPLocation model
 type IPLocation struct {
 	Index *int `json:"-" xml:"index,attr,omitempty"`

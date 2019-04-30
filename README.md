@@ -47,7 +47,7 @@ func main() {
         panic(err)
     }
 
-    result, err := client.GeoLocation.Get("8.8.8.8")
+    result, err := client.GeoLocation.Get("8.8.8.8", nil)
     if err != nil {
         panic(err)
     }
@@ -89,7 +89,7 @@ NewClient initializes a new API client. You may use your own http client, or pas
 #### func (*GeoLocation) Get
 
 ``` go
-func (c *GeoLocation) Get(ip string) (*IPLocation, error)
+func (c *GeoLocation) Get(ip string, options *GetLocationOptions) (*IPLocation, error)
 ```
 
 Returns geoip location data for the specified IP address (or domain name).
@@ -98,7 +98,7 @@ Returns geoip location data for the specified IP address (or domain name).
 #### func (*GeoLocation) GetCurrent
 
 ``` go
-func (c *GeoLocation) GetCurrent() (*IPLocation, error)
+func (c *GeoLocation) GetCurrent(options *GetLocationOptions) (*IPLocation, error)
 ```
 
 Returns geoip location data for the requester's IP address.
@@ -107,7 +107,7 @@ Returns geoip location data for the requester's IP address.
 #### func (*GeoLocation) GetBulk
 
 ``` go
-func (c *GeoLocation) GetBulk(iplist []string) ([]IPLocation, error)
+func (c *GeoLocation) GetBulk(iplist []string, options *GetLocationOptions) ([]IPLocation, error)
 ```
 
 Returns an array of geo location data for the specified IP addresses (or domain names).

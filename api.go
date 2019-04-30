@@ -101,14 +101,28 @@ func (c *Client) GetVersion() string {
 	return version
 }
 
+//************************************************
+
 // Get retrieves the geolocation for the given domain or IP address
-func (c *GeoLocation) Get(ip string) (*IPLocation, error) {
+func (c *GeoLocation) Get(ip string, options *GeoLocationOptions) (*IPLocation, error) {
 	if len(ip) == 0 {
 		return nil, ErrInvalidIPAddress
 	}
 
+	// Process options
+	query := ""
+	if options != nil {
+		query = "?fields=" + options.DisplayFields
+		if options.LookupHostname {
+			query += "&hostname=true"
+		}
+		if options.ShowSecurityInfo {
+			query += "&security=true"
+		}
+	}
+
 	var resp Response
-	_, err := c.client.get(fmt.Sprintf("/v1/geoip/%s", ip), nil, &resp)
+	_, err := c.client.get(fmt.Sprintf("/v1/geoip/%s%s", ip, query), nil, &resp)
 	if err != nil {
 		return nil, err
 	}
@@ -122,8 +136,13 @@ func (c *GeoLocation) Get(ip string) (*IPLocation, error) {
 	return result, nil
 }
 
+// GetCurrent retrieves the geolocation for the requester.
+func (c *GeoLocation) GetCurrent(options *GeoLocationOptions) (*IPLocation, error) {
+	return c.Get("myip", options)
+}
+
 // GetBulk retrieves the geolocation for multiple domain names or IP addresses.
-func (c *GeoLocation) GetBulk(iplist []string) ([]IPLocation, error) {
+func (c *GeoLocation) GetBulk(iplist []string, options *GeoLocationOptions) ([]IPLocation, error) {
 	var resp Response
 
 	if len(iplist) == 0 {
@@ -131,7 +150,19 @@ func (c *GeoLocation) GetBulk(iplist []string) ([]IPLocation, error) {
 	}
 	ips := strings.Join(iplist, ",")
 
-	_, err := c.client.get(fmt.Sprintf("/v1/geoip/%s", ips), nil, &resp)
+	// Process options
+	query := ""
+	if options != nil {
+		query = "?fields=" + options.DisplayFields
+		if options.LookupHostname {
+			query += "&hostname=true"
+		}
+		if options.ShowSecurityInfo {
+			query += "&security=true"
+		}
+	}
+
+	_, err := c.client.get(fmt.Sprintf("/v1/geoip/%s%s", ips, query), nil, &resp)
 	if err != nil {
 		return nil, err
 	}
@@ -145,22 +176,7 @@ func (c *GeoLocation) GetBulk(iplist []string) ([]IPLocation, error) {
 	return result, nil
 }
 
-// GetCurrent retrieves the geolocation for the requester.
-func (c *GeoLocation) GetCurrent() (*IPLocation, error) {
-	var resp Response
-	_, err := c.client.get("/v1/geoip/myip", nil, &resp)
-	if err != nil {
-		return nil, err
-	}
-
-	result := &IPLocation{}
-	err = fromMap(resp.Data, result)
-	if err != nil {
-		return nil, err
-	}
-
-	return result, nil
-}
+//************************************************
 
 // Get returns the API usage for current month.
 func (c *Usage) Get() (*APIUsage, error) {
