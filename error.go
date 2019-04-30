@@ -7,7 +7,7 @@ type Error struct {
 	Status  int    `json:"status"`
 	Success bool   `json:"success"`
 	Message string `json:"message"`
-	//Code    string `json:"code"`
+	Code    string `json:"code"`
 }
 
 // String() converts the error into a human-readable string.
@@ -21,10 +21,11 @@ func (e *Error) Error() string {
 }
 
 // newError creates a new error condition to be returned.
-func newError(status int, message string) error {
+func newError(status int, message, code string) error {
 	return &Error{
 		Status:  status,
 		Success: false,
 		Message: message,
+		Code:    code,
 	}
 }

@@ -19,12 +19,11 @@ const timestampFormat = "Mon, Jan 2 2006 15:04:05 MST"
 
 // Response model
 type Response struct {
-	Status  int    `json:"status"`
-	Success bool   `json:"success"`
-	Message string `json:"message"`
-	//Data    map[string]interface{} `json:"data"`
-	Data interface{} `json:"data"`
-	//Code string                 `json:"code"`
+	Status  int         `json:"status"`
+	Success bool        `json:"success"`
+	Message string      `json:"message"`
+	Code    string      `json:"code"`
+	Data    interface{} `json:"data"`
 }
 
 func (c *Client) get(path string, oldEtag *ETag, result interface{}) (*ETag, error) {
@@ -205,32 +204,33 @@ func closeResponse(resp *http.Response) {
 
 func parseResponse(resp *http.Response, result interface{}) error {
 	if resp.Body == nil {
-		return newError(resp.StatusCode, "Server returned no data")
+		return newError(resp.StatusCode, "Server returned no data", "err-no-data")
 	}
 	body, _ := ioutil.ReadAll(resp.Body)
 	err := json.Unmarshal(body, result)
 	if err != nil {
-		err = newError(resp.StatusCode, "Unexpected response from server")
+		err = newError(resp.StatusCode, "Unexpected response from server", "err-unexpected-response")
 	}
 	return err
 }
 
 func parseErrorResponse(resp *http.Response) error {
 	if resp.Body == nil {
-		return newError(resp.StatusCode, "Server returned no data")
+		return newError(resp.StatusCode, "Server returned no data", "err-no-data")
 	}
 
 	body, _ := ioutil.ReadAll(resp.Body)
+	fmt.Println(string(body))
 	var err error
 	switch resp.StatusCode {
 	case 304:
 		err = ErrNotModified
 	case 500:
-		err = newError(resp.StatusCode, "Internal server error")
+		err = newError(resp.StatusCode, "Internal server error", "err-internal-server-error")
 	case 502:
-		err = newError(resp.StatusCode, "Bad gateway")
+		err = newError(resp.StatusCode, "Bad gateway", "err-bad-gateway")
 	case 503:
-		err = newError(resp.StatusCode, "Service unavailable")
+		err = newError(resp.StatusCode, "Service unavailable", "err-service-unavailable")
 	}
 	if err != nil {
 		return err
@@ -239,11 +239,11 @@ func parseErrorResponse(resp *http.Response) error {
 	var result Response
 	err = json.Unmarshal(body, &result)
 	if err != nil {
-		err = newError(resp.StatusCode, "Unexpected response from server")
+		err = newError(resp.StatusCode, "Unexpected response from server", "err-unexpected-response")
 	} else if len(result.Message) == 0 {
-		err = newError(resp.StatusCode, "Unexpected response from server")
+		err = newError(resp.StatusCode, "Unexpected response from server", "err-unexpected-response")
 	} else {
-		err = newError(resp.StatusCode, result.Message)
+		err = newError(resp.StatusCode, result.Message, result.Code)
 	}
 	return err
 }

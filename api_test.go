@@ -87,3 +87,16 @@ func Test_GeoLocation_GetCurrent(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, result)
 }
+
+func Test_GeoLocation_Get_Invalid_IP(t *testing.T) {
+	client, err := objectia.NewClient(apiKey, nil)
+	assert.NoError(t, err)
+	assert.NotNil(t, client)
+
+	_, err = client.GeoLocation.Get("288.8.8.8", nil)
+	assert.Error(t, err)
+	if err != nil {
+		e := err.(*objectia.Error)
+		assert.Equal(t, "err-invalid-ip", e.Code)
+	}
+}
