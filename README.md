@@ -6,7 +6,7 @@ Go client for [Objectia API](https://objectia.com)
  
 ## Documentation
 
-See the [Go API docs](https://docs.objectia.com/clients/go.html).
+See the [Go API docs](https://docs.objectia.com/guide/go.html).
 
 ## Installation
 
