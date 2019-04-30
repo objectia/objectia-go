@@ -9,27 +9,44 @@ import (
 )
 
 const (
-	version        = "1.0.0"
-	userAgent      = "objectia-go/" + version
-	apiBaseURL     = "https://api.objectia.com/rest"
-	mockapiBaseURL = "https://mock-api.objectia.com/rest"
-	defaultTimeout = time.Second * 30
+	version             = "1.0.0"
+	userAgent           = "objectia-go/" + version
+	apiBaseURL          = "https://api.objectia.com/rest"
+	mockapiBaseURL      = "https://mock-api.objectia.com/rest"
+	defaultTimeout      = 30 * time.Second
+	defaultRetryMax     = 4
+	defaultRetryWaitMin = 1 * time.Second
+	defaultRetryWaitMax = 30 * time.Second
+
+	// We need to consume response bodies to maintain http connections, but
+	// limit the size we consume to respReadLimit.
+	respReadLimit = int64(4096)
 )
 
 // Connection errors
 var (
 	ErrConnectionTimedout = errors.New("Connection timed out")
 	ErrConnectionRefused  = errors.New("Connection refused")
-	ErrUknownHost         = errors.New("Unknown host")
+	ErrUnknownHost        = errors.New("Unknown host")
 	ErrNotModified        = errors.New("Not Modified")
 	ErrInvalidIPAddress   = errors.New("Invalid IP address")
 )
+
+// Logger interface allows to use other loggers than standard log.Logger.
+type Logger interface {
+	Printf(string, ...interface{})
+}
 
 // Client encapsulates the api functions - must be created with NewClient()
 type Client struct {
 	apiKey     string
 	apiBaseURL string
 	httpClient *http.Client
+	// Public properties
+	Logger       Logger
+	RetryMax     int
+	RetryWaitMin time.Duration
+	RetryWaitMax time.Duration
 	// Public APIs:
 	GeoLocation *GeoLocation
 	Usage       *Usage
@@ -57,9 +74,12 @@ func NewClient(apiKey string, httpClient *http.Client) (*Client, error) {
 	}
 
 	c := &Client{
-		apiBaseURL: baseURL,
-		apiKey:     apiKey,
-		httpClient: httpClient,
+		apiBaseURL:   baseURL,
+		apiKey:       apiKey,
+		httpClient:   httpClient,
+		RetryMax:     defaultRetryMax,
+		RetryWaitMin: defaultRetryWaitMin,
+		RetryWaitMax: defaultRetryWaitMax,
 	}
 
 	// Use the default http client
@@ -102,23 +122,6 @@ func (c *GeoLocation) Get(ip string) (*IPLocation, error) {
 	return result, nil
 }
 
-// Get returns the API usage for current month.
-func (c *Usage) Get() (*APIUsage, error) {
-	var resp Response
-	_, err := c.client.get("/v1/usage", nil, &resp)
-	if err != nil {
-		return nil, err
-	}
-
-	result := &APIUsage{}
-	err = fromMap(resp.Data, result)
-	if err != nil {
-		return nil, err
-	}
-
-	return result, nil
-}
-
 // GetBulk retrieves the geolocation for multiple domain names or IP addresses.
 func (c *GeoLocation) GetBulk(iplist []string) ([]IPLocation, error) {
 	var resp Response
@@ -151,6 +154,23 @@ func (c *GeoLocation) GetCurrent() (*IPLocation, error) {
 	}
 
 	result := &IPLocation{}
+	err = fromMap(resp.Data, result)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
+
+// Get returns the API usage for current month.
+func (c *Usage) Get() (*APIUsage, error) {
+	var resp Response
+	_, err := c.client.get("/v1/usage", nil, &resp)
+	if err != nil {
+		return nil, err
+	}
+
+	result := &APIUsage{}
 	err = fromMap(resp.Data, result)
 	if err != nil {
 		return nil, err

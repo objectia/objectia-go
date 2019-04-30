@@ -88,5 +88,5 @@ type IPSecurity struct {
 
 // APIUsage model
 type APIUsage struct {
-	GeoLocation int `json:"geoip,omitempty" xml:"geoip,omitempty"`
+	GeoLocationRequests int `json:"geoip_requests,omitempty" xml:"geoip_requests,omitempty"`
 }

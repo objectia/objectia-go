@@ -35,7 +35,7 @@ func Test_Usage_Get(t *testing.T) {
 	result, err := client.Usage.Get()
 	assert.NoError(t, err)
 	assert.NotNil(t, result)
-	assert.Equal(t, 12345, result.GeoLocation)
+	assert.Equal(t, 12345, result.GeoLocationRequests)
 }
 
 func Test_GeoLocation_Get(t *testing.T) {

@@ -1,9 +1,12 @@
 package objectia
 
 import (
+	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
+	"math"
 	"net"
 	"net/http"
 	"net/url"
@@ -103,18 +106,70 @@ func (c *Client) newRequest(method, path string, params *Parameters) (*http.Requ
 }
 
 func (c *Client) execute(req *http.Request, result interface{}) (*http.Response, error) {
-	resp, err := c.httpClient.Do(req)
-	if err != nil {
-		return nil, checkConnectError(err)
+	if c.Logger != nil {
+		c.Logger.Printf("[DEBUG] %s %s", req.Method, req.URL)
 	}
-	defer closeResponse(resp)
 
-	if resp.StatusCode == 200 || resp.StatusCode == 201 {
-		err = parseResponse(resp, result)
-	} else {
-		err = parseErrorResponse(resp)
+	var resp *http.Response
+	var err error
+
+	for i := 0; ; i++ {
+		var statusCode int
+
+		// Attempt the request
+		resp, err = c.httpClient.Do(req)
+		if resp != nil {
+			statusCode = resp.StatusCode
+		}
+
+		// Check if we have to retry
+		retry, checkErr := checkRetry(req.Context(), resp, err)
+
+		if err != nil {
+			if c.Logger != nil {
+				c.Logger.Printf("[ERR] %s %s request failed: %v", req.Method, req.URL, err)
+			}
+		}
+
+		if !retry {
+			if checkErr != nil {
+				err = checkErr
+			} else {
+				if statusCode == 200 || statusCode == 201 {
+					err = parseResponse(resp, result)
+				} else {
+					err = parseErrorResponse(resp)
+				}
+			}
+			return resp, err
+		}
+
+		// Make another attmpt?
+		attemptsLeft := c.RetryMax - i
+		if attemptsLeft <= 0 {
+			break
+		}
+
+		wait := backoff(c.RetryWaitMin, c.RetryWaitMax, i)
+		desc := fmt.Sprintf("%s %s", req.Method, req.URL)
+		if statusCode > 0 {
+			desc = fmt.Sprintf("%s (status: %d)", desc, statusCode)
+		}
+		if c.Logger != nil {
+			c.Logger.Printf("[DEBUG] %s: retrying in %s (%d left)", desc, wait, attemptsLeft)
+		}
+		select {
+		case <-req.Context().Done():
+			return nil, req.Context().Err()
+		case <-time.After(wait):
+		}
 	}
-	return resp, err
+
+	if resp != nil {
+		resp.Body.Close()
+	}
+
+	return nil, fmt.Errorf("%s %s giving up after %d attempts", req.Method, req.URL, c.RetryMax+1)
 }
 
 func checkConnectError(err error) error {
@@ -130,7 +185,7 @@ func checkConnectError(err error) error {
 				}
 			} else {
 				//NOTE: Not sure if this is correct!
-				return ErrUknownHost
+				return ErrUnknownHost
 			}
 		}
 		/* Pretty sure this only occur during read/write and not connect.....
@@ -191,4 +246,47 @@ func parseErrorResponse(resp *http.Response) error {
 		err = newError(resp.StatusCode, result.Message)
 	}
 	return err
+}
+
+// backoff will perform exponential backoff based on the attempt number and limited
+// by the provided minimum and maximum durations.
+func backoff(min, max time.Duration, attemptNum int) time.Duration {
+	mult := math.Pow(2, float64(attemptNum)) * float64(min)
+	sleep := time.Duration(mult)
+	if float64(sleep) != mult || sleep > max {
+		sleep = max
+	}
+	return sleep
+}
+
+// Try to read the response body so we can reuse this connection.
+func (c *Client) drainBody(body io.ReadCloser) {
+	defer body.Close()
+	_, err := io.Copy(ioutil.Discard, io.LimitReader(body, respReadLimit))
+	if err != nil {
+		//if c.Logger != nil {
+		//	c.Logger.Printf("[ERR] error reading response body: %v", err)
+		//}
+	}
+}
+
+// checkRetry checks if we should retry or not.
+func checkRetry(ctx context.Context, resp *http.Response, err error) (bool, error) {
+	// do not retry on context.Canceled or context.DeadlineExceeded
+	if ctx.Err() != nil {
+		return false, ctx.Err()
+	}
+
+	if err != nil {
+		return true, checkConnectError(err)
+	}
+	// Check the response code. We retry on 500-range responses to allow
+	// the server time to recover, as 500's are typically not permanent
+	// errors and may relate to outages on the server side. This will catch
+	// invalid response codes as well, like 0 and 999.
+	if resp.StatusCode == 0 || (resp.StatusCode >= 500 && resp.StatusCode != 501) {
+		return true, nil
+	}
+
+	return false, nil
 }
