@@ -259,17 +259,6 @@ func backoff(min, max time.Duration, attemptNum int) time.Duration {
 	return sleep
 }
 
-// Try to read the response body so we can reuse this connection.
-func (c *Client) drainBody(body io.ReadCloser) {
-	defer body.Close()
-	_, err := io.Copy(ioutil.Discard, io.LimitReader(body, respReadLimit))
-	if err != nil {
-		//if c.Logger != nil {
-		//	c.Logger.Printf("[ERR] error reading response body: %v", err)
-		//}
-	}
-}
-
 // checkRetry checks if we should retry or not.
 func checkRetry(ctx context.Context, resp *http.Response, err error) (bool, error) {
 	// do not retry on context.Canceled or context.DeadlineExceeded

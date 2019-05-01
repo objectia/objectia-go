@@ -17,10 +17,6 @@ const (
 	defaultRetryMax     = 4
 	defaultRetryWaitMin = 1 * time.Second
 	defaultRetryWaitMax = 30 * time.Second
-
-	// We need to consume response bodies to maintain http connections, but
-	// limit the size we consume to respReadLimit.
-	respReadLimit = int64(4096)
 )
 
 // Connection errors
