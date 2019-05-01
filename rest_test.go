@@ -20,5 +20,5 @@ func Test_Get(t *testing.T) {
 
 	var resp Response
 	_, err = client.get("/v1/geoip/8.8.8.8", nil, &resp)
-	assert.NoError(t, err)
+	assert.Error(t, err)
 }

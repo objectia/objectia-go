@@ -12,7 +12,6 @@ const (
 	version             = "1.0.0"
 	userAgent           = "objectia-go/" + version
 	apiBaseURL          = "https://api.objectia.com/rest"
-	mockapiBaseURL      = "https://mock-api.objectia.com/rest"
 	defaultTimeout      = 30 * time.Second
 	defaultRetryMax     = 4
 	defaultRetryWaitMin = 1 * time.Second
@@ -64,13 +63,8 @@ func NewClient(apiKey string, httpClient *http.Client) (*Client, error) {
 		return nil, errors.New("No API key provided")
 	}
 
-	baseURL := apiBaseURL
-	if apiKey == "mock" {
-		baseURL = mockapiBaseURL
-	}
-
 	c := &Client{
-		apiBaseURL:   baseURL,
+		apiBaseURL:   apiBaseURL,
 		apiKey:       apiKey,
 		httpClient:   httpClient,
 		RetryMax:     defaultRetryMax,

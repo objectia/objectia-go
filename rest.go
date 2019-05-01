@@ -126,7 +126,7 @@ func (c *Client) execute(req *http.Request, result interface{}) (*http.Response,
 
 		if err != nil {
 			if c.Logger != nil {
-				c.Logger.Printf("[ERR] %s %s request failed: %v", req.Method, req.URL, err)
+				c.Logger.Printf("[ERROR] %s %s request failed: %v", req.Method, req.URL, err)
 			}
 		}
 
