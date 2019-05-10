@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/objectia/objectia-go.svg?branch=master)](https://travis-ci.org/objectia/objectia-go) 
 <!-- [![codecov](https://codecov.io/gh/objectia/objectia-go/branch/master/graph/badge.svg)](https://codecov.io/gh/objectia/objectia-go) -->
 
-Go client for [Objectia API](https://objectia.com) 
+Go client for [Objectia API](https://objectia.com)&reg; 
  
 ## Documentation
 
