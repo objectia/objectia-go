@@ -57,7 +57,6 @@ func (c *Client) post(path string, params *Parameters, result interface{}) error
 	if err != nil {
 		return err
 	}
-
 	_, err = c.execute(req, result)
 	return err
 }
@@ -82,6 +81,7 @@ func (c *Client) delete(path string, result interface{}) error {
 
 func (c *Client) newRequest(method, path string, params *Parameters) (*http.Request, error) {
 	var body io.ReadWriter
+	body = nil
 	var err error
 	if params != nil {
 		body, err = params.Encode()
@@ -89,6 +89,8 @@ func (c *Client) newRequest(method, path string, params *Parameters) (*http.Requ
 			return nil, err
 		}
 	}
+
+	fmt.Println(body)
 
 	req, err := http.NewRequest(method, c.apiBaseURL+path, body)
 	if err != nil {
@@ -99,7 +101,7 @@ func (c *Client) newRequest(method, path string, params *Parameters) (*http.Requ
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("User-Agent", userAgent)
 	if params != nil {
-		req.Header.Set("Content-Type", "application/json")
+		req.Header.Set("Content-Type", params.GetContentType())
 	}
 	return req, nil
 }
