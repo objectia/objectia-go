@@ -49,7 +49,7 @@ func Test_Post_File(t *testing.T) {
 	params := NewParameters()
 	params.AddFile("me.png", "/users/Otto/me.png")
 	params.AddFile("me2.png", "/users/Otto/me2.png")
-	params.Add("name", "dasdasdasdasd")
+	params.Add("name", "dsadsdasd")
 
 	var resp Response
 	err = client.post("/v1/test", params, &resp)

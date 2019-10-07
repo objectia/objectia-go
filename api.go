@@ -44,11 +44,17 @@ type Client struct {
 	RetryWaitMax time.Duration
 	// Public APIs:
 	GeoLocation *GeoLocation
+	Mail        *Mail
 	Usage       *Usage
 }
 
 // GeoLocation api functions
 type GeoLocation struct {
+	client *Client
+}
+
+// Mail api functions
+type Mail struct {
 	client *Client
 }
 
@@ -164,6 +170,28 @@ func (c *GeoLocation) GetBulk(iplist []string, options *GeoLocationOptions) ([]I
 	}
 
 	return result, nil
+}
+
+//************************************************
+
+// Send sends a mail message
+func (c *Mail) Send(senderDomain string, message *Message) (string, error) {
+	var resp Response
+
+	params := message.ToParameters()
+
+	err := c.client.post("/v1/mail/send", params, &resp)
+	if err != nil {
+		return "", err
+	}
+
+	messageID := ""
+	/*err = fromMap(resp.Data, &result)
+	if err != nil {
+		return "", err
+	}*/
+
+	return messageID, nil
 }
 
 //************************************************

@@ -1,6 +1,8 @@
 package objectia
 
-import "time"
+import (
+	"time"
+)
 
 // ETag model
 type ETag struct {
