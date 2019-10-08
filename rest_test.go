@@ -13,6 +13,9 @@ var apiKey string
 
 func init() {
 	apiKey = os.Getenv("OBJECTIA_APIKEY")
+	if len(apiKey) == 0 {
+		log.Fatalln("OBJECTIA_APIKEY environment variable not defined")
+	}
 }
 
 func Test_Get(t *testing.T) {

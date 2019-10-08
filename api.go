@@ -87,6 +87,7 @@ func NewClient(apiKey string, httpClient *http.Client) (*Client, error) {
 
 	// Attach the APIs
 	c.GeoLocation = &GeoLocation{client: c}
+	c.Mail = &Mail{client: c}
 	c.Usage = &Usage{client: c}
 
 	return c, nil
@@ -170,28 +171,6 @@ func (c *GeoLocation) GetBulk(iplist []string, options *GeoLocationOptions) ([]I
 	}
 
 	return result, nil
-}
-
-//************************************************
-
-// Send sends a mail message
-func (c *Mail) Send(senderDomain string, message *Message) (string, error) {
-	var resp Response
-
-	params := message.ToParameters()
-
-	err := c.client.post("/v1/mail/send", params, &resp)
-	if err != nil {
-		return "", err
-	}
-
-	messageID := ""
-	/*err = fromMap(resp.Data, &result)
-	if err != nil {
-		return "", err
-	}*/
-
-	return messageID, nil
 }
 
 //************************************************
