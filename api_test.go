@@ -1,7 +1,6 @@
 package objectia_test
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"testing"
@@ -103,14 +102,13 @@ func Test_GeoLocation_Get_Invalid_IP(t *testing.T) {
 }
 
 func Test_Mail_Send(t *testing.T) {
-	apiKey := "c805c848d17449b986447a9e81e543ec"
+	apiKey := "d562d9b7c24b47f8a1cd8689db0404fc"
 	client, err := objectia.NewClient(apiKey, nil)
 	assert.NoError(t, err)
 	assert.NotNil(t, client)
 
 	m := objectia.NewMessage("test@demo2.org", "Test", "This is just a test", "otto@doseth.com")
-	_, err = client.Mail.Send(m)
+	messageID, err := client.Mail.Send(m)
 	assert.NoError(t, err)
-
-	fmt.Println(err)
+	assert.NotEmpty(t, messageID)
 }

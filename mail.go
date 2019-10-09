@@ -10,11 +10,11 @@ func (c *Mail) Send(message *Message) (string, error) {
 		return "", err
 	}
 
-	messageID := ""
-	/*err = fromMap(resp.Data, &result)
+	result := &MailReceipt{}
+	err = fromMap(resp.Data, result)
 	if err != nil {
 		return "", err
-	}*/
+	}
 
-	return messageID, nil
+	return result.MessageID, nil
 }

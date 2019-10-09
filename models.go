@@ -98,4 +98,10 @@ type IPSecurity struct {
 // APIUsage model
 type APIUsage struct {
 	GeoLocationRequests int `json:"geoip_requests,omitempty" xml:"geoip_requests,omitempty"`
+	MailRequests        int `json:"mail_requests,omitempty" xml:"mail_requests,omitempty"`
+}
+
+// MailReceipt model
+type MailReceipt struct {
+	MessageID string `json:"message_id,omitempty" xml:"message_id,omitempty"`
 }
