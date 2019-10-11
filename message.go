@@ -19,6 +19,7 @@ type Message struct {
 	Text        string    `json:"text" xml:"text"`
 	HTML        string    `json:"html" xml:"html"`
 	Attachments []string  `json:"attachments" xml:"attachments"`
+	Tags        []string  `json:"tags" xml:"tags"`
 	Charset     string    `json:"charset,omitempty" xml:"charset,omitempty"`
 	Encoding    string    `json:"encoding,omitempty" xml:"encoding,omitempty"`
 }
@@ -45,7 +46,16 @@ func (m *Message) AddBcc(bcc ...string) {
 
 // AddAttachment ...
 func (m *Message) AddAttachment(fileName string) {
-	m.Attachments = append(m.Attachments, fileName)
+	if len(m.Attachments) < 10 {
+		m.Attachments = append(m.Attachments, fileName)
+	}
+}
+
+// AddTag ...
+func (m *Message) AddTag(tag string) {
+	if len(m.Tags) < 3 {
+		m.Tags = append(m.Tags, tag)
+	}
 }
 
 // SetHTML ...
@@ -84,12 +94,19 @@ func (m *Message) ToParameters() *Parameters {
 		params.Add("html", m.HTML)
 	}
 
-	//FIXME: Add rest of fields...
+	if len(m.Tags) > 0 {
+		params.Add("tags", m.Tags)
+	}
 
 	for _, fn := range m.Attachments {
 		key := filepath.Base(fn)
 		params.AddFile(key, fn)
 	}
+
+	params.Add("charset", m.Charset)
+	params.Add("encoding", m.Encoding)
+
+	//FIXME: Add rest of fields...
 
 	return params
 }

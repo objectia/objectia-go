@@ -101,7 +101,9 @@ type APIUsage struct {
 	MailRequests        int `json:"mail_requests,omitempty" xml:"mail_requests,omitempty"`
 }
 
-// MailReceipt model
-type MailReceipt struct {
-	MessageID string `json:"message_id,omitempty" xml:"message_id,omitempty"`
+// SendMailReceipt model
+type SendMailReceipt struct {
+	ID                  string `json:"id" xml:"id"`
+	AcceptedReceipients int    `json:"accepted_recipients" xml:"accepted_recipients"`
+	RejectedReceipients int    `json:"rejected_recipients" xml:"rejected_recipients"`
 }
