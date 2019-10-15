@@ -29,7 +29,7 @@ type Message struct {
 	OpenTracking          bool `json:"open_tracking,omitempty" xml:"open_tracking,omitempty"`
 	ClickTracking         bool `json:"click_tracking,omitempty" xml:"click_tracking,omitempty"`
 	HTMLOnlyClickTracking bool `json:"html_click_tracking,omitempty" xml:"html_click_tracking,omitempty"` // if click_tracking
-	UnsubscribeTracking   bool `json:"unsub_tracking,omitempty" xml:"unsub_tracking,omitempty"`
+	UnsubscribeTracking   bool `json:"unsubscribe_tracking,omitempty" xml:"unsubscribe_tracking,omitempty"`
 }
 
 // NewMessage ...

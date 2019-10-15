@@ -21,6 +21,19 @@ func Test_Mail_Send(t *testing.T) {
 	assert.NotEmpty(t, messageID)
 }
 
+func Test_Mail_Send2(t *testing.T) {
+	apiKey := "d562d9b7c24b47f8a1cd8689db0404fc"
+	client, err := objectia.NewClient(apiKey, nil)
+	assert.NoError(t, err)
+	assert.NotNil(t, client)
+
+	// OK
+	m := objectia.NewMessage("ok@demo2.org", "Test", "This is just a test", "ok@demo2.org")
+	messageID, err := client.Mail.Send(m)
+	assert.NoError(t, err)
+	assert.NotEmpty(t, messageID)
+}
+
 func Test_Mail_Send_Hard_Bounce(t *testing.T) {
 	apiKey := "d562d9b7c24b47f8a1cd8689db0404fc"
 	client, err := objectia.NewClient(apiKey, nil)
