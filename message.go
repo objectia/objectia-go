@@ -22,6 +22,14 @@ type Message struct {
 	Tags        []string  `json:"tags" xml:"tags"`
 	Charset     string    `json:"charset,omitempty" xml:"charset,omitempty"`
 	Encoding    string    `json:"encoding,omitempty" xml:"encoding,omitempty"`
+
+	// Options:
+	RequireTLS            bool `json:"require_tls,omitempty" xml:"require_tls,omitempty"`
+	VerifyCertificate     bool `json:"verify_cert,omitempty" xml:"verify_cert,omitempty"`
+	OpenTracking          bool `json:"open_tracking,omitempty" xml:"open_tracking,omitempty"`
+	ClickTracking         bool `json:"click_tracking,omitempty" xml:"click_tracking,omitempty"`
+	HTMLOnlyClickTracking bool `json:"html_click_tracking,omitempty" xml:"html_click_tracking,omitempty"` // if click_tracking
+	UnsubscribeTracking   bool `json:"unsub_tracking,omitempty" xml:"unsub_tracking,omitempty"`
 }
 
 // NewMessage ...

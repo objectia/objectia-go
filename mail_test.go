@@ -14,7 +14,8 @@ func Test_Mail_Send(t *testing.T) {
 	assert.NotNil(t, client)
 
 	// OK
-	m := objectia.NewMessage("ok@demo2.org", "Test", "This is just a test", "ok@demo2.org")
+	m := objectia.NewMessage("ok@demo2.org", "Test", "This is just a test: http://www.example.com.", "ok@demo2.org")
+	m.SetHTML(`<html><body>This is just a test in HTML! <a href="http://www.example.com">Some link</a></body></html>`)
 	messageID, err := client.Mail.Send(m)
 	assert.NoError(t, err)
 	assert.NotEmpty(t, messageID)
