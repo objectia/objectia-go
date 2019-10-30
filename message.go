@@ -7,7 +7,6 @@ import (
 
 // Message model
 type Message struct {
-	Domain      string    `json:"domain" xml:"domain"`
 	Date        time.Time `json:"date" xml:"date"`
 	From        string    `json:"from" xml:"from"`
 	FromName    string    `json:"from_name" xml:"from_name"`
@@ -30,6 +29,7 @@ type Message struct {
 	ClickTracking         bool `json:"click_tracking,omitempty" xml:"click_tracking,omitempty"`
 	HTMLOnlyClickTracking bool `json:"html_click_tracking,omitempty" xml:"html_click_tracking,omitempty"` // if click_tracking
 	UnsubscribeTracking   bool `json:"unsubscribe_tracking,omitempty" xml:"unsubscribe_tracking,omitempty"`
+	TestMode              bool `json:"test_mode,omitempty" xml:"test_mode,omitempty"`
 }
 
 // NewMessage ...
@@ -74,6 +74,11 @@ func (m *Message) SetHTML(html string) {
 // SetReplyTo ...
 func (m *Message) SetReplyTo(recipient string) {
 	m.ReplyTo = recipient
+}
+
+// SetTestMode ...
+func (m *Message) SetTestMode(flag bool) {
+	m.TestMode = flag
 }
 
 // ToParameters ...

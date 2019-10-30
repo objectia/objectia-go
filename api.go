@@ -11,7 +11,7 @@ import (
 const (
 	version             = "1.0.0"
 	userAgent           = "objectia-go/" + version
-	apiBaseURL          = "https://api.objectia.com/rest"
+	apiBaseURL          = "https://api.objectia.com"
 	defaultTimeout      = 30 * time.Second
 	defaultRetryMax     = 4
 	defaultRetryWaitMin = 1 * time.Second

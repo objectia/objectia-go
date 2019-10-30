@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/gob"
 	"encoding/json"
-	"fmt"
 	"io"
 	"mime/multipart"
 	"os"
@@ -74,12 +73,9 @@ func (p *Parameters) Encode() (*bytes.Buffer, error) {
 
 			b, _ := getBytes(val)
 			part.Write(b)
-
-			fmt.Println(b)
 		}
 
 		p.contentType = writer.FormDataContentType()
-		fmt.Println("CONTENT TYPE: ", p.contentType)
 		writer.Close()
 	} else {
 		// No files, only key/value attributes
