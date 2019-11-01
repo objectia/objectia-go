@@ -5,6 +5,7 @@ func (c *Mail) Send(message *Message) (*SendMailReceipt, error) {
 	var resp Response
 
 	params := message.ToParameters()
+
 	err := c.client.post("/v1/mail/send", params, &resp)
 	if err != nil {
 		return nil, err

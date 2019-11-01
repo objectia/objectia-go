@@ -2,12 +2,13 @@ package objectia
 
 import (
 	"bytes"
-	"encoding/gob"
 	"encoding/json"
+	"fmt"
 	"io"
 	"mime/multipart"
 	"os"
 	"path/filepath"
+	"reflect"
 )
 
 // Parameters struct
@@ -44,7 +45,7 @@ func (p *Parameters) GetContentType() string {
 func (p *Parameters) Encode() (*bytes.Buffer, error) {
 	result := &bytes.Buffer{}
 
-	if len(p.files) > 0 {
+	if len(p.files) >= 0 {
 		// Has file attachments
 
 		writer := multipart.NewWriter(result)
@@ -66,13 +67,17 @@ func (p *Parameters) Encode() (*bytes.Buffer, error) {
 
 		// The other attributes
 		for key, val := range p.params {
-			part, err := writer.CreateFormField(key)
-			if err != nil {
-				return nil, err
+			switch reflect.TypeOf(val).Kind() {
+			case reflect.Slice, reflect.Array:
+				v := reflect.ValueOf(val)
+				for i := 0; i < v.Len(); i++ {
+					s := fmt.Sprintf("%v", v.Index(i).Interface())
+					writer.WriteField(key, s)
+				}
+			default:
+				s := fmt.Sprintf("%v", val)
+				writer.WriteField(key, s)
 			}
-
-			b, _ := getBytes(val)
-			part.Write(b)
 		}
 
 		p.contentType = writer.FormDataContentType()
@@ -89,12 +94,13 @@ func (p *Parameters) Encode() (*bytes.Buffer, error) {
 	return result, nil
 }
 
-func getBytes(key interface{}) ([]byte, error) {
+/*func getBytes(val interface{}) ([]byte, error) {
 	var buf bytes.Buffer
 	enc := gob.NewEncoder(&buf)
-	err := enc.Encode(key)
+	err := enc.Encode(val)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
+*/

@@ -16,6 +16,7 @@ func Test_Mail_Send0(t *testing.T) {
 	// OK
 	m := objectia.NewMessage("test2@demo2.org", "Test", "This is just a test: http://www.example.com.", "test2@demo2.org")
 	m.SetHTML(`<html><body>This is just a test in HTML! <a href="http://www.example.com">Some link</a></body></html>`)
+	m.AddAttachment("/Users/otto/me.png")
 	m.SetTestMode(true)
 	receipt, err := client.Mail.Send(m)
 	assert.NoError(t, err)
@@ -29,7 +30,7 @@ func Test_Mail_Send(t *testing.T) {
 	assert.NotNil(t, client)
 
 	// OK
-	m := objectia.NewMessage("ok@demo2.org", "Test", "This is just a test: http://www.example.com.", "ok@demo2.org")
+	m := objectia.NewMessage("ok@demo2.org", "Test", "This is just a test: http://www.example.com.", "ok@demo2.org", "okey@demo2.org")
 	m.SetHTML(`<html><body>This is just a test in HTML! <a href="http://www.example.com">Some link</a></body></html>`)
 	m.SetTestMode(true)
 	receipt, err := client.Mail.Send(m)
