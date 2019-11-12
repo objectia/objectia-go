@@ -1,7 +1,7 @@
 package objectia
 
 // Send sends a mail message
-func (c *Mail) Send(message *Message) (*SendMailReceipt, error) {
+func (c *Mail) Send(message *MailMessage) (*MailReceipt, error) {
 	var resp Response
 
 	params := message.ToParameters()
@@ -11,7 +11,7 @@ func (c *Mail) Send(message *Message) (*SendMailReceipt, error) {
 		return nil, err
 	}
 
-	result := &SendMailReceipt{}
+	result := &MailReceipt{}
 	err = fromMap(resp.Data, result)
 	if err != nil {
 		return nil, err

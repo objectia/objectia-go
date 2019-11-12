@@ -118,7 +118,6 @@ func Test_Mail_Send_DomainError(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, client)
 
-	// Domain not found
 	m := objectia.NewMessage("ok@demo2.org", "Test", "This is just a test", "none@demo2.xxx")
 	m.SetTestMode(true)
 	receipt, err := client.Mail.Send(m)

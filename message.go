@@ -3,39 +3,41 @@ package objectia
 import (
 	"path/filepath"
 	"time"
+
+	"gopkg.in/guregu/null.v3"
 )
 
-// Message model
-type Message struct {
-	Date        time.Time `json:"date" xml:"date"`
-	From        string    `json:"from" xml:"from"`
-	FromName    string    `json:"from_name" xml:"from_name"`
-	ReplyTo     string    `json:"reply_to" xml:"reply_to"`
-	To          []string  `json:"to" xml:"to"`
-	Cc          []string  `json:"cc" xml:"cc"`
-	Bcc         []string  `json:"bcc" xml:"bcc"`
-	Subject     string    `json:"subject" xml:"subject"`
-	Text        string    `json:"text" xml:"text"`
-	HTML        string    `json:"html" xml:"html"`
-	Attachments []string  `json:"attachments" xml:"attachments"`
-	Tags        []string  `json:"tags" xml:"tags"`
-	Charset     string    `json:"charset,omitempty" xml:"charset,omitempty"`
-	Encoding    string    `json:"encoding,omitempty" xml:"encoding,omitempty"`
+// MailMessage model
+type MailMessage struct {
+	Date        time.Time `json:"date"`
+	From        string    `json:"from"`
+	FromName    string    `json:"from_name"`
+	ReplyTo     string    `json:"reply_to"`
+	To          []string  `json:"to"`
+	Cc          []string  `json:"cc"`
+	Bcc         []string  `json:"bcc"`
+	Subject     string    `json:"subject"`
+	Text        string    `json:"text"`
+	HTML        string    `json:"html"`
+	Attachments []string  `json:"attachments"`
+	Tags        []string  `json:"tags"`
+	Charset     string    `json:"charset,omitempty"`
+	Encoding    string    `json:"encoding,omitempty"`
 
 	// Options:
-	RequireTLS            bool `json:"require_tls,omitempty" xml:"require_tls,omitempty"`
-	VerifyCertificate     bool `json:"verify_cert,omitempty" xml:"verify_cert,omitempty"`
-	OpenTracking          bool `json:"open_tracking,omitempty" xml:"open_tracking,omitempty"`
-	ClickTracking         bool `json:"click_tracking,omitempty" xml:"click_tracking,omitempty"`
-	HTMLOnlyClickTracking bool `json:"html_click_tracking,omitempty" xml:"html_click_tracking,omitempty"` // if click_tracking
-	UnsubscribeTracking   bool `json:"unsubscribe_tracking,omitempty" xml:"unsubscribe_tracking,omitempty"`
-	TestMode              bool `json:"test_mode,omitempty" xml:"test_mode,omitempty"`
+	RequireTLS             null.Bool `json:"require_tls,omitempty"`
+	VerifyCertificate      null.Bool `json:"verify_cert,omitempty"`
+	OpenTracking           null.Bool `json:"open_tracking,omitempty"`
+	ClickTracking          null.Bool `json:"click_tracking,omitempty"`
+	PlainTextClickTracking null.Bool `json:"text_click_tracking"`
+	UnsubscribeTracking    null.Bool `json:"unsubscribe_tracking,omitempty"`
+	TestMode               null.Bool `json:"test_mode,omitempty"`
 }
 
 // NewMessage ...
-func NewMessage(from, subject, text string, to ...string) *Message {
-	return &Message{
-		From:    from, //FIXME: from, fromName
+func NewMessage(from, subject, text string, to ...string) *MailMessage {
+	return &MailMessage{
+		From:    from,
 		Subject: subject,
 		Text:    text,
 		To:      to,
@@ -43,49 +45,79 @@ func NewMessage(from, subject, text string, to ...string) *Message {
 }
 
 // AddCc ...
-func (m *Message) AddCc(cc ...string) {
+func (m *MailMessage) AddCc(cc ...string) {
 	m.Cc = append(m.Cc, cc...)
 }
 
 // AddBcc ...
-func (m *Message) AddBcc(bcc ...string) {
+func (m *MailMessage) AddBcc(bcc ...string) {
 	m.Bcc = append(m.Bcc, bcc...)
 }
 
 // AddAttachment ...
-func (m *Message) AddAttachment(fileName string) {
+func (m *MailMessage) AddAttachment(fileName string) {
 	if len(m.Attachments) < 10 {
 		m.Attachments = append(m.Attachments, fileName)
 	}
 }
 
 // AddTag ...
-func (m *Message) AddTag(tag string) {
+func (m *MailMessage) AddTag(tag string) {
 	if len(m.Tags) < 3 {
 		m.Tags = append(m.Tags, tag)
 	}
 }
 
 // SetHTML ...
-func (m *Message) SetHTML(html string) {
+func (m *MailMessage) SetHTML(html string) {
 	m.HTML = html
 }
 
 // SetReplyTo ...
-func (m *Message) SetReplyTo(recipient string) {
+func (m *MailMessage) SetReplyTo(recipient string) {
 	m.ReplyTo = recipient
 }
 
 // SetTestMode ...
-func (m *Message) SetTestMode(flag bool) {
-	m.TestMode = flag
+func (m *MailMessage) SetTestMode(flag bool) {
+	m.TestMode = null.NewBool(flag, true)
+}
+
+// SetRequireTLS ...
+func (m *MailMessage) SetRequireTLS(flag bool) {
+	m.RequireTLS = null.NewBool(flag, true)
+}
+
+// SetVerifyCertificate ...
+func (m *MailMessage) SetVerifyCertificate(flag bool) {
+	m.VerifyCertificate = null.NewBool(flag, true)
+}
+
+// SetOpenTracking ...
+func (m *MailMessage) SetOpenTracking(flag bool) {
+	m.OpenTracking = null.NewBool(flag, true)
+}
+
+// SetClickTracking ...
+func (m *MailMessage) SetClickTracking(flag bool) {
+	m.ClickTracking = null.NewBool(flag, true)
+}
+
+// SetPlainTextClickTracking ...
+func (m *MailMessage) SetPlainTextClickTracking(flag bool) {
+	m.PlainTextClickTracking = null.NewBool(flag, true)
+}
+
+// SetUnsubscribeTracking ...
+func (m *MailMessage) SetUnsubscribeTracking(flag bool) {
+	m.UnsubscribeTracking = null.NewBool(flag, true)
 }
 
 // ToParameters ...
-func (m *Message) ToParameters() *Parameters {
+func (m *MailMessage) ToParameters() *Parameters {
 	params := NewParameters()
 	if !m.Date.IsZero() {
-		params.Add("data", m.Date)
+		params.Add("date", m.Date)
 	}
 	params.Add("from", m.From)
 	if len(m.FromName) > 0 {
@@ -107,6 +139,10 @@ func (m *Message) ToParameters() *Parameters {
 		params.Add("html", m.HTML)
 	}
 
+	if len(m.ReplyTo) > 0 {
+		params.Add("reply_to", m.ReplyTo)
+	}
+
 	if len(m.Tags) > 0 {
 		params.Add("tags", m.Tags)
 	}
@@ -119,7 +155,27 @@ func (m *Message) ToParameters() *Parameters {
 	params.Add("charset", m.Charset)
 	params.Add("encoding", m.Encoding)
 
-	//FIXME: Add rest of fields...
+	if !m.RequireTLS.IsZero() {
+		params.Add("require_tls", *m.RequireTLS.Ptr())
+	}
+	if !m.VerifyCertificate.IsZero() {
+		params.Add("verify_cert", *m.VerifyCertificate.Ptr())
+	}
+	if !m.OpenTracking.IsZero() {
+		params.Add("open_tracking", *m.OpenTracking.Ptr())
+	}
+	if !m.ClickTracking.IsZero() {
+		params.Add("click_tracking", *m.ClickTracking.Ptr())
+	}
+	if !m.PlainTextClickTracking.IsZero() {
+		params.Add("text_click_tracking", *m.PlainTextClickTracking.Ptr())
+	}
+	if !m.UnsubscribeTracking.IsZero() {
+		params.Add("unsubscribe_tracking", *m.UnsubscribeTracking.Ptr())
+	}
+	if !m.TestMode.IsZero() {
+		params.Add("test_mode", *m.TestMode.Ptr())
+	}
 
 	return params
 }

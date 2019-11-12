@@ -93,14 +93,3 @@ func (p *Parameters) Encode() (*bytes.Buffer, error) {
 
 	return result, nil
 }
-
-/*func getBytes(val interface{}) ([]byte, error) {
-	var buf bytes.Buffer
-	enc := gob.NewEncoder(&buf)
-	err := enc.Encode(val)
-	if err != nil {
-		return nil, err
-	}
-	return buf.Bytes(), nil
-}
-*/
