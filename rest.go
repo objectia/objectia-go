@@ -90,8 +90,6 @@ func (c *Client) newRequest(method, path string, params *Parameters) (*http.Requ
 		}
 	}
 
-	fmt.Println(body)
-
 	req, err := http.NewRequest(method, c.apiBaseURL+path, body)
 	if err != nil {
 		return nil, err
@@ -222,7 +220,6 @@ func parseErrorResponse(resp *http.Response) error {
 	}
 
 	body, _ := ioutil.ReadAll(resp.Body)
-	fmt.Println(string(body))
 	var err error
 	switch resp.StatusCode {
 	case 304:

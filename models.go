@@ -35,7 +35,7 @@ type IPLocation struct {
 	Capital       string `json:"capital,omitempty" xml:"capital,omitempty"`
 
 	Region     string `json:"region_name,omitempty" xml:"region_name,omitempty"`
-	RegionCode string `json:"region_code,omitempty" xml:"region_code,omitempty"` //FIXME!
+	RegionCode string `json:"region_code,omitempty" xml:"region_code,omitempty"`
 	City       string `json:"city,omitempty" xml:"city,omitempty"`
 	Postcode   string `json:"postcode,omitempty" xml:"postcode,omitempty"`
 

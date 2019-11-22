@@ -3,8 +3,6 @@ package objectia
 import (
 	"path/filepath"
 	"time"
-
-	"gopkg.in/guregu/null.v3"
 )
 
 // MailMessage model
@@ -25,13 +23,13 @@ type MailMessage struct {
 	Encoding    string    `json:"encoding,omitempty"`
 
 	// Options:
-	RequireTLS             null.Bool `json:"require_tls,omitempty"`
-	VerifyCertificate      null.Bool `json:"verify_cert,omitempty"`
-	OpenTracking           null.Bool `json:"open_tracking,omitempty"`
-	ClickTracking          null.Bool `json:"click_tracking,omitempty"`
-	PlainTextClickTracking null.Bool `json:"text_click_tracking"`
-	UnsubscribeTracking    null.Bool `json:"unsubscribe_tracking,omitempty"`
-	TestMode               null.Bool `json:"test_mode,omitempty"`
+	RequireTLS             *bool `json:"require_tls,omitempty"`
+	VerifyCertificate      *bool `json:"verify_cert,omitempty"`
+	OpenTracking           *bool `json:"open_tracking,omitempty"`
+	ClickTracking          *bool `json:"click_tracking,omitempty"`
+	PlainTextClickTracking *bool `json:"text_click_tracking"`
+	UnsubscribeTracking    *bool `json:"unsubscribe_tracking,omitempty"`
+	TestMode               *bool `json:"test_mode,omitempty"`
 }
 
 // NewMessage ...
@@ -80,37 +78,44 @@ func (m *MailMessage) SetReplyTo(recipient string) {
 
 // SetTestMode ...
 func (m *MailMessage) SetTestMode(flag bool) {
-	m.TestMode = null.NewBool(flag, true)
+	m.TestMode = new(bool)
+	*m.TestMode = flag
 }
 
 // SetRequireTLS ...
 func (m *MailMessage) SetRequireTLS(flag bool) {
-	m.RequireTLS = null.NewBool(flag, true)
+	m.RequireTLS = new(bool)
+	*m.RequireTLS = flag
 }
 
 // SetVerifyCertificate ...
 func (m *MailMessage) SetVerifyCertificate(flag bool) {
-	m.VerifyCertificate = null.NewBool(flag, true)
+	m.VerifyCertificate = new(bool)
+	*m.VerifyCertificate = flag
 }
 
 // SetOpenTracking ...
 func (m *MailMessage) SetOpenTracking(flag bool) {
-	m.OpenTracking = null.NewBool(flag, true)
+	m.OpenTracking = new(bool)
+	*m.OpenTracking = flag
 }
 
 // SetClickTracking ...
 func (m *MailMessage) SetClickTracking(flag bool) {
-	m.ClickTracking = null.NewBool(flag, true)
+	m.ClickTracking = new(bool)
+	*m.ClickTracking = flag
 }
 
 // SetPlainTextClickTracking ...
 func (m *MailMessage) SetPlainTextClickTracking(flag bool) {
-	m.PlainTextClickTracking = null.NewBool(flag, true)
+	m.PlainTextClickTracking = new(bool)
+	*m.PlainTextClickTracking = flag
 }
 
 // SetUnsubscribeTracking ...
 func (m *MailMessage) SetUnsubscribeTracking(flag bool) {
-	m.UnsubscribeTracking = null.NewBool(flag, true)
+	m.UnsubscribeTracking = new(bool)
+	*m.UnsubscribeTracking = flag
 }
 
 // ToParameters ...
@@ -155,26 +160,26 @@ func (m *MailMessage) ToParameters() *Parameters {
 	params.Add("charset", m.Charset)
 	params.Add("encoding", m.Encoding)
 
-	if !m.RequireTLS.IsZero() {
-		params.Add("require_tls", *m.RequireTLS.Ptr())
+	if m.RequireTLS != nil {
+		params.Add("require_tls", *m.RequireTLS)
 	}
-	if !m.VerifyCertificate.IsZero() {
-		params.Add("verify_cert", *m.VerifyCertificate.Ptr())
+	if m.VerifyCertificate != nil {
+		params.Add("verify_cert", *m.VerifyCertificate)
 	}
-	if !m.OpenTracking.IsZero() {
-		params.Add("open_tracking", *m.OpenTracking.Ptr())
+	if m.OpenTracking != nil {
+		params.Add("open_tracking", *m.OpenTracking)
 	}
-	if !m.ClickTracking.IsZero() {
-		params.Add("click_tracking", *m.ClickTracking.Ptr())
+	if m.ClickTracking != nil {
+		params.Add("click_tracking", *m.ClickTracking)
 	}
-	if !m.PlainTextClickTracking.IsZero() {
-		params.Add("text_click_tracking", *m.PlainTextClickTracking.Ptr())
+	if m.PlainTextClickTracking != nil {
+		params.Add("text_click_tracking", *m.PlainTextClickTracking)
 	}
-	if !m.UnsubscribeTracking.IsZero() {
-		params.Add("unsubscribe_tracking", *m.UnsubscribeTracking.Ptr())
+	if m.UnsubscribeTracking != nil {
+		params.Add("unsubscribe_tracking", *m.UnsubscribeTracking)
 	}
-	if !m.TestMode.IsZero() {
-		params.Add("test_mode", *m.TestMode.Ptr())
+	if m.TestMode != nil {
+		params.Add("test_mode", *m.TestMode)
 	}
 
 	return params

@@ -35,7 +35,6 @@ func Test_Usage_Get(t *testing.T) {
 	result, err := client.Usage.Get()
 	assert.NoError(t, err)
 	assert.NotNil(t, result)
-	assert.Equal(t, 12345, result.GeoLocationRequests)
 }
 
 func Test_GeoLocation_Get(t *testing.T) {
@@ -69,7 +68,7 @@ func Test_GeoLocation_GetBulk(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, client)
 
-	results, err := client.GeoLocation.GetBulk([]string{"8.8.8.8", "google.com"}, nil)
+	results, err := client.GeoLocation.GetBulk([]string{"8.8.8.8", "apple.com"}, nil)
 	assert.NoError(t, err)
 	assert.Equal(t, 2, len(results))
 	for _, v := range results {
