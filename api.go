@@ -1,7 +1,6 @@
 package objectia
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
 	"strings"
@@ -16,15 +15,6 @@ const (
 	defaultRetryMax     = 4
 	defaultRetryWaitMin = 1 * time.Second
 	defaultRetryWaitMax = 30 * time.Second
-)
-
-// Connection errors
-var (
-	ErrConnectionTimedout = errors.New("Connection timed out")
-	ErrConnectionRefused  = errors.New("Connection refused")
-	ErrUnknownHost        = errors.New("Unknown host")
-	ErrNotModified        = errors.New("Not Modified")
-	ErrInvalidIPAddress   = errors.New("Invalid IP address")
 )
 
 // Logger interface allows to use other loggers than standard log.Logger.
@@ -66,7 +56,7 @@ type Usage struct {
 // NewClient creates a new Client with the provided apiKey and an optional httpClient.
 func NewClient(apiKey string, httpClient *http.Client) (*Client, error) {
 	if len(apiKey) == 0 {
-		return nil, errors.New("No API key provided")
+		return nil, NewError("err-missing-apikey", "No API key provided")
 	}
 
 	c := &Client{
@@ -103,7 +93,7 @@ func (c *Client) GetVersion() string {
 // Get retrieves the geolocation for the given domain or IP address
 func (c *GeoLocation) Get(ip string, options *GeoLocationOptions) (*IPLocation, error) {
 	if len(ip) == 0 {
-		return nil, ErrInvalidIPAddress
+		return nil, NewError("err-invalid-ip", "Invalid IP address")
 	}
 
 	// Process options
@@ -143,7 +133,7 @@ func (c *GeoLocation) GetBulk(iplist []string, options *GeoLocationOptions) ([]I
 	var resp Response
 
 	if len(iplist) == 0 {
-		return nil, ErrInvalidIPAddress
+		return nil, NewError("err-invalid-ip", "Invalid IP address")
 	}
 	ips := strings.Join(iplist, ",")
 

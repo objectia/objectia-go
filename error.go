@@ -20,12 +20,22 @@ func (e *Error) Error() string {
 	return e.String()
 }
 
-// newError creates a new error condition to be returned.
-func newError(status int, message, code string) error {
+// NewResponseError creates a new API response error.
+func NewResponseError(status int, code, message string) error {
 	return &Error{
 		Status:  status,
 		Success: false,
-		Message: message,
 		Code:    code,
+		Message: message,
+	}
+}
+
+// NewError creates a new error.
+func NewError(code, message string) error {
+	return &Error{
+		Status:  0,
+		Success: false,
+		Code:    code,
+		Message: message,
 	}
 }

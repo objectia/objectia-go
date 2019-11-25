@@ -10,8 +10,6 @@ import (
 	"net"
 	"net/http"
 	"net/url"
-	"os"
-	"syscall"
 	"time"
 )
 
@@ -175,23 +173,11 @@ func checkConnectError(err error) error {
 	switch t := err.(type) {
 	case *url.Error:
 		if err, ok := t.Err.(net.Error); ok && err.Timeout() {
-			return ErrConnectionTimedout
+			return NewError("err-timeout", "Connection timed out")
 		}
-		if opErr, ok := t.Err.(*net.OpError); ok {
-			if sysErr, ok := opErr.Err.(*os.SyscallError); ok {
-				if sysErr.Err == syscall.ECONNREFUSED {
-					return ErrConnectionRefused
-				}
-			} else {
-				//NOTE: Not sure if this is correct!
-				return ErrUnknownHost
-			}
+		if _, ok := t.Err.(*net.OpError); ok {
+			return NewError("err-connect", "Failed to connect")
 		}
-		/* Pretty sure this only occur during read/write and not connect.....
-		case net.Error:
-		if t.Timeout() {
-			return errors.New("Connection timed out")
-		}*/
 	}
 	return err
 }
@@ -204,32 +190,32 @@ func closeResponse(resp *http.Response) {
 
 func parseResponse(resp *http.Response, result interface{}) error {
 	if resp.Body == nil {
-		return newError(resp.StatusCode, "Server returned no data", "err-no-data")
+		return NewResponseError(resp.StatusCode, "err-no-data", "Server returned no data")
 	}
 	body, _ := ioutil.ReadAll(resp.Body)
 	err := json.Unmarshal(body, result)
 	if err != nil {
-		err = newError(resp.StatusCode, "Unexpected response from server", "err-unexpected-response")
+		err = NewResponseError(resp.StatusCode, "err-unexpected", "Unexpected response from server")
 	}
 	return err
 }
 
 func parseErrorResponse(resp *http.Response) error {
 	if resp.Body == nil {
-		return newError(resp.StatusCode, "Server returned no data", "err-no-data")
+		return NewResponseError(resp.StatusCode, "err-no-data", "Server returned no data")
 	}
 
 	body, _ := ioutil.ReadAll(resp.Body)
 	var err error
 	switch resp.StatusCode {
 	case 304:
-		err = ErrNotModified
+		err = NewResponseError(resp.StatusCode, "err-not-modified", "Not modified")
 	case 500:
-		err = newError(resp.StatusCode, "Internal server error", "err-internal-server-error")
+		err = NewResponseError(resp.StatusCode, "err-internal-server-error", "Internal server error")
 	case 502:
-		err = newError(resp.StatusCode, "Bad gateway", "err-bad-gateway")
+		err = NewResponseError(resp.StatusCode, "err-bad-gateway", "Bad gateway")
 	case 503:
-		err = newError(resp.StatusCode, "Service unavailable", "err-service-unavailable")
+		err = NewResponseError(resp.StatusCode, "err-service-unavailable", "Service unavailable")
 	}
 	if err != nil {
 		return err
@@ -238,11 +224,11 @@ func parseErrorResponse(resp *http.Response) error {
 	var result Response
 	err = json.Unmarshal(body, &result)
 	if err != nil {
-		err = newError(resp.StatusCode, "Unexpected response from server", "err-unexpected-response")
+		err = NewResponseError(resp.StatusCode, "err-unexpected", "Unexpected response from server")
 	} else if len(result.Message) == 0 {
-		err = newError(resp.StatusCode, "Unexpected response from server", "err-unexpected-response")
+		err = NewResponseError(resp.StatusCode, "err-unexpected", "Unexpected response from server")
 	} else {
-		err = newError(resp.StatusCode, result.Message, result.Code)
+		err = NewResponseError(resp.StatusCode, result.Code, result.Message)
 	}
 	return err
 }

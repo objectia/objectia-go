@@ -92,7 +92,7 @@ func Test_GeoLocation_Get_Invalid_IP(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, client)
 
-	_, err = client.GeoLocation.Get("288.8.8.8", nil)
+	_, err = client.GeoLocation.Get("x", nil)
 	assert.Error(t, err)
 	if err != nil {
 		e := err.(*objectia.Error)
