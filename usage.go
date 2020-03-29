@@ -2,18 +2,15 @@ package objectia
 
 import "github.com/objectia/objectia-go/internal"
 
-// Send sends a mail message
-func (c *Mail) Send(message *MailMessage) (*MailReceipt, error) {
+// Get returns the API usage for current month.
+func (c *Usage) Get() (*APIUsage, error) {
 	var resp Response
-
-	params := message.ToParameters()
-
-	err := c.client.post("/v1/mail/send", params, &resp)
+	_, err := c.client.get("/v1/usage", nil, &resp)
 	if err != nil {
 		return nil, err
 	}
 
-	result := &MailReceipt{}
+	result := &APIUsage{}
 	err = internal.FromMap(resp.Data, result)
 	if err != nil {
 		return nil, err

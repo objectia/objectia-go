@@ -3,6 +3,8 @@ package objectia
 import (
 	"path/filepath"
 	"time"
+
+	"github.com/objectia/objectia-go/internal"
 )
 
 // MailMessage model
@@ -119,8 +121,8 @@ func (m *MailMessage) SetUnsubscribeTracking(flag bool) {
 }
 
 // ToParameters ...
-func (m *MailMessage) ToParameters() *Parameters {
-	params := NewParameters()
+func (m *MailMessage) ToParameters() *internal.Parameters {
+	params := internal.NewParameters()
 	if !m.Date.IsZero() {
 		params.Add("date", m.Date)
 	}

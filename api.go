@@ -1,9 +1,7 @@
 package objectia
 
 import (
-	"fmt"
 	"net/http"
-	"strings"
 	"time"
 )
 
@@ -32,9 +30,12 @@ type Client struct {
 	RetryMax     int
 	RetryWaitMin time.Duration
 	RetryWaitMax time.Duration
-	// Public APIs:
+	// Public APIs
 	GeoLocation *GeoLocation
+	Currency    *Currency
+	PDF         *PDF
 	Mail        *Mail
+	SMS         *SMS
 	Usage       *Usage
 }
 
@@ -43,8 +44,23 @@ type GeoLocation struct {
 	client *Client
 }
 
+// Currency api functions
+type Currency struct {
+	client *Client
+}
+
+// PDF api functions
+type PDF struct {
+	client *Client
+}
+
 // Mail api functions
 type Mail struct {
+	client *Client
+}
+
+// SMS api functions
+type SMS struct {
 	client *Client
 }
 
@@ -77,7 +93,10 @@ func NewClient(apiKey string, httpClient *http.Client) (*Client, error) {
 
 	// Attach the APIs
 	c.GeoLocation = &GeoLocation{client: c}
+	c.Currency = &Currency{client: c}
+	c.PDF = &PDF{client: c}
 	c.Mail = &Mail{client: c}
+	c.SMS = &SMS{client: c}
 	c.Usage = &Usage{client: c}
 
 	return c, nil
@@ -86,98 +105,4 @@ func NewClient(apiKey string, httpClient *http.Client) (*Client, error) {
 // GetVersion returns the client version string.
 func (c *Client) GetVersion() string {
 	return version
-}
-
-//************************************************
-
-// Get retrieves the geolocation for the given domain or IP address
-func (c *GeoLocation) Get(ip string, options *GeoLocationOptions) (*IPLocation, error) {
-	if len(ip) == 0 {
-		return nil, NewError("err-invalid-ip", "Invalid IP address")
-	}
-
-	// Process options
-	query := ""
-	if options != nil {
-		query = "?fields=" + options.DisplayFields
-		if options.LookupHostname {
-			query += "&hostname=true"
-		}
-		if options.ShowSecurityInfo {
-			query += "&security=true"
-		}
-	}
-
-	var resp Response
-	_, err := c.client.get(fmt.Sprintf("/v1/geoip/%s%s", ip, query), nil, &resp)
-	if err != nil {
-		return nil, err
-	}
-
-	result := &IPLocation{}
-	err = fromMap(resp.Data, result)
-	if err != nil {
-		return nil, err
-	}
-
-	return result, nil
-}
-
-// GetCurrent retrieves the geolocation for the requester.
-func (c *GeoLocation) GetCurrent(options *GeoLocationOptions) (*IPLocation, error) {
-	return c.Get("myip", options)
-}
-
-// GetBulk retrieves the geolocation for multiple domain names or IP addresses.
-func (c *GeoLocation) GetBulk(iplist []string, options *GeoLocationOptions) ([]IPLocation, error) {
-	var resp Response
-
-	if len(iplist) == 0 {
-		return nil, NewError("err-invalid-ip", "Invalid IP address")
-	}
-	ips := strings.Join(iplist, ",")
-
-	// Process options
-	query := ""
-	if options != nil {
-		query = "?fields=" + options.DisplayFields
-		if options.LookupHostname {
-			query += "&hostname=true"
-		}
-		if options.ShowSecurityInfo {
-			query += "&security=true"
-		}
-	}
-
-	_, err := c.client.get(fmt.Sprintf("/v1/geoip/%s%s", ips, query), nil, &resp)
-	if err != nil {
-		return nil, err
-	}
-
-	result := []IPLocation{}
-	err = fromMap(resp.Data, &result)
-	if err != nil {
-		return nil, err
-	}
-
-	return result, nil
-}
-
-//************************************************
-
-// Get returns the API usage for current month.
-func (c *Usage) Get() (*APIUsage, error) {
-	var resp Response
-	_, err := c.client.get("/v1/usage", nil, &resp)
-	if err != nil {
-		return nil, err
-	}
-
-	result := &APIUsage{}
-	err = fromMap(resp.Data, result)
-	if err != nil {
-		return nil, err
-	}
-
-	return result, nil
 }

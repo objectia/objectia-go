@@ -11,6 +11,8 @@ import (
 	"net/http"
 	"net/url"
 	"time"
+
+	"github.com/objectia/objectia-go/internal"
 )
 
 const timestampFormat = "Mon, Jan 2 2006 15:04:05 MST"
@@ -50,7 +52,7 @@ func (c *Client) get(path string, oldEtag *ETag, result interface{}) (*ETag, err
 	return etag, err
 }
 
-func (c *Client) post(path string, params *Parameters, result interface{}) error {
+func (c *Client) post(path string, params *internal.Parameters, result interface{}) error {
 	req, err := c.newRequest("POST", path, params)
 	if err != nil {
 		return err
@@ -59,7 +61,7 @@ func (c *Client) post(path string, params *Parameters, result interface{}) error
 	return err
 }
 
-func (c *Client) put(path string, params *Parameters, result interface{}) error {
+func (c *Client) put(path string, params *internal.Parameters, result interface{}) error {
 	req, err := c.newRequest("PUT", path, params)
 	if err != nil {
 		return err
@@ -77,7 +79,7 @@ func (c *Client) delete(path string, result interface{}) error {
 	return err
 }
 
-func (c *Client) newRequest(method, path string, params *Parameters) (*http.Request, error) {
+func (c *Client) newRequest(method, path string, params *internal.Parameters) (*http.Request, error) {
 	var body io.ReadWriter
 	body = nil
 	var err error

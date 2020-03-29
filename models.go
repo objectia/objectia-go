@@ -100,3 +100,12 @@ type MailReceipt struct {
 	AcceptedRecipients int    `json:"accepted_recipients"`
 	RejectedRecipients int    `json:"rejected_recipients"`
 }
+
+// SMSReceipt model
+type SMSReceipt struct {
+	ID    string  `json:"id"`
+	From  string  `json:"from"`
+	To    string  `json:"to"`
+	Text  string  `json:"text"`
+	Price float64 `json:"price"`
+}

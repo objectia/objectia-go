@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/objectia/objectia-go/internal"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -36,7 +37,7 @@ func Test_Post(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, client)
 
-	params := NewParameters()
+	params := internal.NewParameters()
 	params.Add("name", "Otto")
 
 	var resp Response
@@ -49,7 +50,7 @@ func Test_Post_File(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, client)
 
-	params := NewParameters()
+	params := internal.NewParameters()
 	params.AddFile("me.png", "/users/Otto/me.png")
 	params.AddFile("me2.png", "/users/Otto/me2.png")
 	params.Add("name", "dsadsdasd")

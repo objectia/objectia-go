@@ -1,4 +1,4 @@
-package objectia
+package internal
 
 import (
 	"bytes"

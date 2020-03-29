@@ -1,9 +1,11 @@
 # objectia-go
-[![Build Status](https://travis-ci.org/objectia/objectia-go.svg?branch=master)](https://travis-ci.org/objectia/objectia-go) 
+
+[![Build Status](https://travis-ci.org/objectia/objectia-go.svg?branch=master)](https://travis-ci.org/objectia/objectia-go)
+
 <!-- [![codecov](https://codecov.io/gh/objectia/objectia-go/branch/master/graph/badge.svg)](https://codecov.io/gh/objectia/objectia-go) -->
 
-Go client for [Objectia API](https://objectia.com)&reg; 
- 
+Go client for [Objectia API](https://objectia.com)&reg;
+
 ## Documentation
 
 See the [Go API docs](https://docs.objectia.com/go/).
@@ -15,12 +17,11 @@ want to use the package, just run:
 
 ```bash
 $ go get -u github.com/objectia/objectia-go
-```    
+```
 
 ### Requirements
 
-* Go 1.8 or later
-
+- Go 1.8 or later
 
 ### Development:
 
@@ -57,12 +58,11 @@ func main() {
 
 Look in the [examples folder](./examples) for more code examples.
 
-
 ## License and Trademarks
 
-Copyright (c) 2018-19 UAB Salesfly.
+Copyright (c) 2018-20 UAB Salesfly.
 
-Licensed under the [MIT license](https://en.wikipedia.org/wiki/MIT_License). 
+Licensed under the [MIT license](https://en.wikipedia.org/wiki/MIT_License).
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
