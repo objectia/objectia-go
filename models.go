@@ -90,8 +90,8 @@ type IPSecurity struct {
 
 // APIUsage model
 type APIUsage struct {
-	GeoLocationRequests int `json:"geoip_requests,omitempty"`
-	MailRequests        int `json:"mail_requests,omitempty"`
+	Requests map[string]int     `json:"requests,omitempty"`
+	Cost     map[string]float64 `json:"cost,omitempty"`
 }
 
 // MailReceipt model
