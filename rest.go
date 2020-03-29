@@ -1,6 +1,7 @@
 package objectia
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -195,11 +196,20 @@ func parseResponse(resp *http.Response, result interface{}) error {
 		return NewResponseError(resp.StatusCode, "err-no-data", "Server returned no data")
 	}
 	body, _ := ioutil.ReadAll(resp.Body)
-	err := json.Unmarshal(body, result)
-	if err != nil {
-		err = NewResponseError(resp.StatusCode, "err-unexpected", "Unexpected response from server")
+
+	switch v := result.(type) {
+	case *bytes.Buffer:
+		// Return the raw body
+		v.Write(body)
+		return nil
+	default:
+		// JSON body
+		err := json.Unmarshal(body, result)
+		if err != nil {
+			err = NewResponseError(resp.StatusCode, "err-unexpected", "Unexpected response from server")
+		}
+		return err
 	}
-	return err
 }
 
 func parseErrorResponse(resp *http.Response) error {
