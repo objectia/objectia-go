@@ -109,3 +109,60 @@ type SMSReceipt struct {
 	Text  string  `json:"text"`
 	Price float64 `json:"price"`
 }
+
+// CurrencyRateOptions model
+type CurrencyRateOptions struct {
+	Base       string
+	Currencies []string
+}
+
+// CurrencyRate model
+type CurrencyRate struct {
+	Base      string             `json:"base"`
+	Date      string             `json:"date"`
+	Timestamp int64              `json:"timestamp"`
+	Rates     map[string]float64 `json:"rates"`
+}
+
+// CurrencyConvert model
+type CurrencyConvert struct {
+	Amount    float64 `json:"amount"`
+	From      string  `json:"from"`
+	To        string  `json:"to"`
+	Date      string  `json:"date,omitempty"`
+	Timestamp int64   `json:"timestamp"`
+	Rate      float64 `json:"rate"`
+	Result    float64 `json:"result"`
+}
+
+// CurrencyRateChange model
+type CurrencyRateChange struct {
+	StartRate     float64 `json:"start,omitempty"`
+	EndRate       float64 `json:"end,omitempty"`
+	Change        float64 `json:"change,omitempty"`
+	ChangePercent float64 `json:"change_percent,omitempty"`
+	Error         string  `json:"error,omitempty"`
+}
+
+// CurrencyChange model
+type CurrencyChange struct {
+	Base      string                        `json:"base"`
+	StartDate string                        `json:"start_date"`
+	EndDate   string                        `json:"end_date"`
+	Rates     map[string]CurrencyRateChange `json:"rates"`
+}
+
+// CurrencyTimeframe model
+type CurrencyTimeframe struct {
+	Base      string             `json:"base"`
+	Currency  string             `json:"currency"`
+	StartDate string             `json:"start_date"`
+	EndDate   string             `json:"end_date"`
+	Timespan  int                `json:"timespan"`
+	Rates     map[string]float64 `json:"rates"`
+}
+
+// CurrencyList model
+type CurrencyList struct {
+	Currencies map[string]string `json:"currencies"`
+}
