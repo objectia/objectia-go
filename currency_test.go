@@ -4,7 +4,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/objectia/objectia-go"
 	"github.com/stretchr/testify/assert"
 )
@@ -97,6 +96,4 @@ func Test_Currency_List(t *testing.T) {
 	res, err := client.Currency.List()
 	assert.NoError(t, err)
 	assert.NotEmpty(t, res)
-
-	spew.Dump(res.Currencies)
 }

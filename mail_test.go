@@ -8,7 +8,6 @@ import (
 )
 
 func Test_Mail_Send0(t *testing.T) {
-	apiKey := "c79ef0115ce64e639e3b7b67e5649340"
 	client, err := objectia.NewClient(apiKey, nil)
 	assert.NoError(t, err)
 	assert.NotNil(t, client)
@@ -24,7 +23,6 @@ func Test_Mail_Send0(t *testing.T) {
 }
 
 func Test_Mail_Send(t *testing.T) {
-	apiKey := "c79ef0115ce64e639e3b7b67e5649340"
 	client, err := objectia.NewClient(apiKey, nil)
 	assert.NoError(t, err)
 	assert.NotNil(t, client)
@@ -39,7 +37,6 @@ func Test_Mail_Send(t *testing.T) {
 }
 
 func Test_Mail_Send2(t *testing.T) {
-	apiKey := "c79ef0115ce64e639e3b7b67e5649340"
 	client, err := objectia.NewClient(apiKey, nil)
 	assert.NoError(t, err)
 	assert.NotNil(t, client)
@@ -53,7 +50,6 @@ func Test_Mail_Send2(t *testing.T) {
 }
 
 func Test_Mail_Send_Hard_Bounce(t *testing.T) {
-	apiKey := "c79ef0115ce64e639e3b7b67e5649340"
 	client, err := objectia.NewClient(apiKey, nil)
 	assert.NoError(t, err)
 	assert.NotNil(t, client)
@@ -68,7 +64,6 @@ func Test_Mail_Send_Hard_Bounce(t *testing.T) {
 }
 
 func Test_Mail_Send_Graylisted(t *testing.T) {
-	apiKey := "c79ef0115ce64e639e3b7b67e5649340"
 	client, err := objectia.NewClient(apiKey, nil)
 	assert.NoError(t, err)
 	assert.NotNil(t, client)
@@ -83,7 +78,6 @@ func Test_Mail_Send_Graylisted(t *testing.T) {
 }
 
 func Test_Mail_Send_Mailbox_Full(t *testing.T) {
-	apiKey := "c79ef0115ce64e639e3b7b67e5649340"
 	client, err := objectia.NewClient(apiKey, nil)
 	assert.NoError(t, err)
 	assert.NotNil(t, client)
@@ -98,7 +92,6 @@ func Test_Mail_Send_Mailbox_Full(t *testing.T) {
 }
 
 func Test_Mail_Send_Unknown_Recipient(t *testing.T) {
-	apiKey := "c79ef0115ce64e639e3b7b67e5649340"
 	client, err := objectia.NewClient(apiKey, nil)
 	assert.NoError(t, err)
 	assert.NotNil(t, client)
@@ -113,7 +106,6 @@ func Test_Mail_Send_Unknown_Recipient(t *testing.T) {
 }
 
 func Test_Mail_Send_DomainError(t *testing.T) {
-	apiKey := "c79ef0115ce64e639e3b7b67e5649340"
 	client, err := objectia.NewClient(apiKey, nil)
 	assert.NoError(t, err)
 	assert.NotNil(t, client)

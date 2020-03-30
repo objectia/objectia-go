@@ -13,13 +13,12 @@ func Test_PDF_HTML(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, client)
 
-	// OK
 	params := objectia.PDFCreateParams{
-		DocumentHTML: "<html>This is a test, too</html>",
+		DocumentHTML: "<html><h1>Hello world</h1>This is a test of the <strong>PDF API</strong></html>",
 	}
-	pdfDoc, err := client.PDF.Create(&params)
+	buf, err := client.PDF.Create(&params)
 	assert.NoError(t, err)
-	assert.NotEmpty(t, pdfDoc)
+	assert.NotEmpty(t, buf)
 
-	ioutil.WriteFile("/tmp/gogo.pdf", pdfDoc, 0644)
+	ioutil.WriteFile("/tmp/pdftest.pdf", buf, 0644)
 }
